@@ -1,4 +1,4 @@
-package utils;
+package vHFutils;
 
 import flixel.addons.text.FlxTypeText;
 import flixel.FlxSprite;
