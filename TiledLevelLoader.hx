@@ -8,7 +8,6 @@ import flixel.system.FlxAssets.FlxTilemapGraphicAsset;
 import flixel.tile.FlxTilemap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.FlxG;
-import utils.GroupsManager;
 
 // This class has to be used for Tiled based levels (.tmx)
 class TiledLevelLoader 
@@ -44,8 +43,8 @@ class TiledLevelLoader
 					tiledMap.width, 
 					tiledMap.height, 
 					tilesAsset, 
-					16, 
-					16, 
+					tiledMap.tileWidth, 
+					tiledMap.tileHeight, 
 					1
 				);
 				backMap.solid = false;
@@ -62,8 +61,8 @@ class TiledLevelLoader
 					tiledMap.width, 
 					tiledMap.height, 
 					tilesAsset, 
-					16, 
-					16, 
+					tiledMap.tileWidth, 
+					tiledMap.tileHeight, 
 					1
 				);
 				state.add(currentCollidableMap);
@@ -80,8 +79,8 @@ class TiledLevelLoader
 					tiledMap.width, 
 					tiledMap.height, 
 					tilesAsset, 
-					16, 
-					16, 
+					tiledMap.tileWidth, 
+					tiledMap.tileHeight, 
 					1
 				);
 				foreMap.solid = false;
@@ -169,7 +168,7 @@ class TiledLevelLoader
 	{
 		switch(level){
 			case 'level':
-				tilesAsset = AssetPaths.tiles_2__png;
+				tilesAsset = AssetPaths.lowrez__png;
 		}
 		
 		if (tilesAsset != null && tilesAsset != "")
