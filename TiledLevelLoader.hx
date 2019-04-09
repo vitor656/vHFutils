@@ -44,11 +44,13 @@ class TiledLevelLoader
 		var tiledMap = new TiledMap(currentLevelPath);
 
 		for(layer in tilesLayers) {
+
 			var layerMap = new FlxTilemap();
 			var tiledLayer : TiledTileLayer = cast tiledMap.getLayer(layer.layerName);
 
 			if(tiledLayer != null)
 			{
+
 				layerMap.loadMapFromArray(
 					tiledLayer.tileArray,
 					tiledMap.width,
@@ -56,8 +58,10 @@ class TiledLevelLoader
 					layer.tileSet,
 					tiledMap.tileWidth,
 					tiledMap.tileHeight,
-					layer.autotile
+					layer.autotile,
+					1
 				);
+			
 
 				layerMap.solid = layer.isCollidable;
 
@@ -138,5 +142,15 @@ class TiledLevelLoader
 		} else {
 			entitiesLayers.push(layer);
 		}
+	}
+
+	public static function getCurrentCollidableMap() : FlxTilemap
+	{
+		return currentCollidableMap;
+	}
+
+	public static function getCurrentTiledMap() : TiledMap
+	{
+		return currentTiledMap;
 	}
 }
