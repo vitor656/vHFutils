@@ -1,5 +1,6 @@
 package vHFutils;
 
+import flixel.addons.ui.FlxUI9SliceSprite;
 import openfl.Assets;
 import flixel.addons.text.FlxTypeText;
 import flixel.FlxSprite;
@@ -40,6 +41,7 @@ class DialogueManager extends FlxBasic
 
     private var _typeText : FlxTypeText;
     private var _messageBox : FlxSprite;
+    private var _slice : FlxUI9SliceSprite;
     private var _messages : Array<String>;
     private var _currentIndex : Int;
     public var currentMessage : String;
@@ -78,27 +80,24 @@ class DialogueManager extends FlxBasic
 
     public function loadDialogueReceiver(?x:Float = 0, ?y:Float = 0)
     {
-        if(_onBox){
-                  
-        } else {
-			if (_typeText != null){
-				_typeText.reset(0, 0);
-			} else{
-				_typeText = new FlxTypeText(x, y, Std.int(FlxG.width/2), "", _fontSize, true);
-			}
-            
-        }
 
+        if (_typeText != null){
+            _typeText.reset(0, 0);
+            _typeText.visible = true;
+        } else {
+            _typeText = new FlxTypeText(x, y, Std.int(FlxG.width/2), "", _fontSize, true);
+        }
+        
         _typeText.skipKeys = [];
         _typeText.scrollFactor.set(0, 0);
 
     }
 
-    public function startDialogue(?state:FlxState, ?id:String)
+    public function startDialogue(state:FlxState, ?id:String)
     {
 		dialogueFinished = false;
 		
-        if(_typeText == null || !_typeText.alive){
+        if(_typeText == null || !_typeText.visible){
             loadDialogueReceiver();
         }
 
@@ -110,15 +109,34 @@ class DialogueManager extends FlxBasic
 
             if(_onBox){
 
-                _messageBox.screenCenter();
-                _messageBox.y = (FlxG.height - _messageBox.height) - _outsideMargin;
-                _messageBox.scrollFactor.set(0, 0);
+                if(_slice != null)
+                {
+                    _slice.visible = true;
+                    _slice.screenCenter();
+                    _slice.y = (FlxG.height - _slice.height) - _outsideMargin;
+                    _slice.scrollFactor.set(0, 0);
 
-                _typeText.x = _messageBox.x + _padding;
-                _typeText.y = _messageBox.y + _padding;
-                _typeText.width = _messageBox.width - (_padding * 2);
+                    _typeText.x = _slice.x + _padding;
+                    _typeText.y = _slice.y + _padding;
+                    _typeText.width = _slice.width - (_padding * 2);
 
-                state.add(_messageBox);
+                    state.add(_slice);
+                } 
+                else if(_messageBox != null)
+                {
+                    _messageBox.visible = true;
+                    _messageBox.screenCenter();
+                    _messageBox.y = (FlxG.height - _messageBox.height) - _outsideMargin;
+                    _messageBox.scrollFactor.set(0, 0);
+
+                    _typeText.x = _messageBox.x + _padding;
+                    _typeText.y = _messageBox.y + _padding;
+                    _typeText.width = _messageBox.width - (_padding * 2);
+
+                    state.add(_messageBox);
+                }
+
+                
             }
 
             //Adiciona somente se carregou a lista de mensagens pela primeira vez
@@ -189,9 +207,11 @@ class DialogueManager extends FlxBasic
                 keepDialogueGoing();
             } else {
 				dialogueFinished = true;
-                _typeText.kill();
+                _typeText.visible = false;
                 if(_messageBox != null)
-                    _messageBox.destroy();
+                    _messageBox.visible = false;
+                if(_slice != null)
+                    _slice.visible = false;
             }
         }
     }
@@ -210,7 +230,7 @@ class DialogueManager extends FlxBasic
 			_typeText.size = _fontSize;
 	}
 
-    public function useBox(?box : FlxSprite) : Void
+    public function useSpriteBox(?box : FlxSprite) : Void
     {
         if (box == null) {
             _messageBox = new FlxSprite(0, 0);
@@ -220,6 +240,14 @@ class DialogueManager extends FlxBasic
         }
         
         _typeText = new FlxTypeText(0, 0, Std.int(_messageBox.width) - (_padding * 2), "", _fontSize, true); 
+
+        _onBox = true;
+    }
+
+    public function use9SliceBox(slice : FlxUI9SliceSprite) : Void
+    {
+        _slice = slice;
+        _typeText = new FlxTypeText(0, 0, Std.int(_slice.width) - (_padding * 2), "", _fontSize, true); 
 
         _onBox = true;
     }
