@@ -1,5 +1,6 @@
 package vHFutils;
 
+import flixel.text.FlxBitmapText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import openfl.Assets;
 import flixel.addons.text.FlxTypeText;
@@ -10,26 +11,12 @@ import flixel.FlxState;
 import flixel.FlxBasic;
 import flixel.util.FlxColor;
 
-/*
-
-How to use it:
-
-Declare a Dialogue variable in the Main State class 
-
-Ex:
-_dialogue = new Dialogue();
-add(_dialogue);
-_dialogue.startDialogue(this, "teste");
-
-*/
-
-// Add this manager to the current State to manage messages properly
+// Add an instance of this manager to the state in order to manage messages properly
+// Use startDialogue to show some messages
 class DialogueManager extends FlxBasic
 {
-
-    public inline static var DELAY_NORMAL:Float = 0.3;
-    public inline static var DELAY_FAST:Float = 0.05;
-
+    private var _typeSpeedNormal:Float = 0.1;
+    private var _typeSpeedFast:Float = 0.02;
     private var _padding:Int = 5;
     private var _outsideMargin:Int = 10;
     private var _fontSize:Int = 16;
@@ -38,7 +25,7 @@ class DialogueManager extends FlxBasic
 	private var _onBox:Bool;
 	
 	public var dialogueFinished : Bool;
-
+    
     private var _typeText : FlxTypeText;
     private var _messageBox : FlxSprite;
     private var _slice : FlxUI9SliceSprite;
@@ -70,9 +57,9 @@ class DialogueManager extends FlxBasic
 				
 				if (_fasterOnClick){
 					if(ControlsManager.pressedConfirm())
-						_typeText.delay = DELAY_FAST;
+						_typeText.delay = _typeSpeedFast;
 					else
-						_typeText.delay = DELAY_NORMAL;
+						_typeText.delay = _typeSpeedNormal;
 				}
             }
         }
@@ -93,7 +80,7 @@ class DialogueManager extends FlxBasic
 
     }
 
-    public function startDialogue(state:FlxState, ?id:String)
+    public function startDialogue(state : FlxState, ?id : String)
     {
 		dialogueFinished = false;
 		
@@ -154,9 +141,9 @@ class DialogueManager extends FlxBasic
             _typeText.resetText(currentMessage);
 			
             if(!_clickOnComplete)
-				_typeText.start(DELAY_NORMAL, false, false, onCompleteWait);
+				_typeText.start(_typeSpeedNormal, false, false, onCompleteWait);
 			else
-				_typeText.start(DELAY_NORMAL, false, false, onCompleteClick);
+				_typeText.start(_typeSpeedNormal, false, false, onCompleteClick);
 
         } else {
             trace("No messages loaded...");
@@ -250,6 +237,12 @@ class DialogueManager extends FlxBasic
         _typeText = new FlxTypeText(0, 0, Std.int(_slice.width) - (_padding * 2), "", _fontSize, true); 
 
         _onBox = true;
+    }
+
+    public function setTypeSpeed(normalSpeed : Float, onHoldSpeed : Float) : Void
+    {
+        _typeSpeedNormal = normalSpeed;
+        _typeSpeedFast = onHoldSpeed;
     }
 
 }
